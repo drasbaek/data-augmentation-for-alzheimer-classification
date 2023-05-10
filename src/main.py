@@ -37,19 +37,16 @@ def arg_parse():
     parser = argparse.ArgumentParser()
 
     # add argument
-    parser.add_argument("-a", "--augmentation", type=str, default=None,)
+    parser.add_argument("-b", "--brightness_range", nargs="+", type=float, default=[1, 1])
+    parser.add_argument("-w", "--zca_whitening", type=bool, default=False)
+    parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
+    parser.add_argument("-f", "--horizontal_flip", type=bool, default=False)
 
     # parse arguments
     args = parser.parse_args()
 
-    # check if augmentation type is given
-    if args.augmentation:
-        augmentation = json.loads(args.augmentation)
-    
-    else:
-        augmentation = None
+    return args
 
-    return augmentation
 
 def define_paths():
     '''
@@ -121,11 +118,20 @@ class CustomDataGenerator(Sequence):
         return x, y
 
 
-def load_data_subset(inpath, rel_path, augmentations):
+def load_data_subset(inpath, rel_path, args=None):
+    # get path to the split dataset
     path = inpath / "dataset_split"
 
-    if rel_path == "train":
-        generator = ImageDataGenerator(augmentations, preprocessing_function=preprocess_input)
+    if rel_path == "train" and args != None:
+        generator = ImageDataGenerator(brightness_range = args.brightness_range, 
+                                        zca_whitening = args.zca_whitening,
+                                        zoom_range = args.zoom_range,
+                                        horizontal_flip = args.horizontal_flip,
+                                        preprocessing_function=preprocess_input)
+        shuffle = True
+    
+    elif rel_path == "train" and args == None:
+        generator = ImageDataGenerator(preprocessing_function=preprocess_input)
         shuffle = True
     else:
         generator = ImageDataGenerator(preprocessing_function=preprocess_input)
@@ -142,20 +148,26 @@ def load_data_subset(inpath, rel_path, augmentations):
     return data_subset
 
 
-def load_data(inpath, augmentations):
-    if augmentations != None:
-        train_data_augmented = load_data_subset(inpath, "train", augmentations=augmentations)
-        train_data_original = load_data_subset(inpath, "train", augmentations=None)
-        train_data = CustomDataGenerator(train_data_original, train_data_augmented)
+def load_data(inpath, args):
+    # check if all arguments are default
+    if all([
+        args.brightness_range == [1, 1],
+        not args.zca_whitening,
+        args.zoom_range == [1, 1],
+        not args.horizontal_flip
+    ]):
+        train_data = load_data_subset(inpath, "train")
     
     else:
-        train_data = load_data_subset(inpath, "train", augmentations=None)
+        train_data_augmented = load_data_subset(inpath, "train", args)
+        train_data_original = load_data_subset(inpath, "train")
+        train_data = CustomDataGenerator(train_data_original, train_data_augmented)
 
     # load validation data
-    val_data = load_data_subset(inpath, "val", augmentations=None)
+    val_data = load_data_subset(inpath, "val")
 
     # load test data
-    test_data = load_data_subset(inpath, "test", augmentations=None)
+    test_data = load_data_subset(inpath, "test")
 
     return train_data, val_data, test_data
 
@@ -199,9 +211,9 @@ def build_model():
 
 def main():
     # parse arguments
-    augmentation = arg_parse()
+    args = arg_parse()
 
-    print(augmentation)
+    print(args.brightness_range)
 
     # define paths
     inpath, outpath = define_paths()
@@ -210,7 +222,7 @@ def main():
     split_folders(inpath)
 
     # load data
-    train_data, val_data, test_data = load_data(inpath, augmentations=augmentation)
+    train_data, val_data, test_data = load_data(inpath, args)
 
     # build model
     model = build_model()
