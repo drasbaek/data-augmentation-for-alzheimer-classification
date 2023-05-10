@@ -8,7 +8,8 @@ from tensorflow.keras.applications.efficientnet_v2 import (preprocess_input,
                                                  EfficientNetV2M)
 # layers
 from tensorflow.keras.layers import (Flatten, 
-                                     Dense)
+                                     Dense,
+                                     Dropout)
 # generic model object
 from tensorflow.keras.models import Model
 
@@ -138,6 +139,48 @@ def load_data(inpath, rel_path, shuffle=True, augmentations=None):
     return train_data, val_data, test_data
 
 
+def build_model():
+    # load efficientnet model
+    model = EfficientNetV2M(
+        include_top=False,
+        weights="imagenet",
+        input_shape=(128, 128, 3)
+    )
+
+    # freeze the layers
+    for layer in model.layers:
+        layer.trainable = False
+
+    # flatten the output of the model
+    flatten = Flatten()(model.layers[-1].output)
+    dense = Dense(128, activation="relu")(flatten)
+    dropout = Dropout(0.2)(dense)
+    dense = Dense(64, activation="relu")(dropout)
+    dropout = Dropout(0.2)(dense)
+    dense = Dense(32, activation="relu")(dropout)
+    output = Dense(4, activation="softmax")(dense)
+
+    # define learning rate schedule
+    lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+        initial_learning_rate=0.01,
+        decay_steps=10000,
+        decay_rate=0.9)
+    sgd = SGD(learning_rate=lr_schedule)
+
+    # define the model
+    model = Model(inputs=model.inputs, outputs=output)
+
+    # print model card
+    model.summary()
+
+    # compile the model
+    model.compile(
+        optimizer=sgd,
+        loss="categorical_crossentropy",
+        metrics=["accuracy"]
+    )
+
+
 def main():
     # define paths
     inpath, outpath = define_paths()
@@ -153,48 +196,8 @@ def main():
     # load data
     train_data, val_data, test_data = load_data(inpath, "train", shuffle=True, augmentations=augmentations)
 
-    # load efficientnet model
-    model = EfficientNetV2M(
-        include_top=False,
-        weights="imagenet",
-        input_shape=(128, 128, 3)
-    )
-
-    # freeze the layers
-    for layer in model.layers:
-        layer.trainable = False
-
-    # flatten the output of the model
-    flatten = Flatten()(model.output)
-
-    # add a dense layer
-    dense = Dense(128, activation="relu")(flatten)
-
-    # add a dense layer
-    dense = Dense(64, activation="relu")(dense)
-
-    # add a dense layer
-    dense = Dense(32, activation="relu")(dense)
-
-    # add output layer
-    output = Dense(4, activation="softmax")(dense)
-
-    # define learning rate schedule
-    lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-        initial_learning_rate=0.01,
-        decay_steps=10000,
-        decay_rate=0.9)
-    sgd = SGD(learning_rate=lr_schedule)
-
-    # define the model
-    model = Model(inputs=model.inputs, outputs=output)
-
-    # compile the model
-    model.compile(
-        optimizer=sgd,
-        loss="categorical_crossentropy",
-        metrics=["accuracy"]
-    )
+    # build model
+    model = build_model()
 
     # fit the model
     history = model.fit(
