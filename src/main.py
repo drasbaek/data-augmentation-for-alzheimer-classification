@@ -180,6 +180,8 @@ def build_model():
         metrics=["accuracy"]
     )
 
+    return model
+
 
 def main():
     # define paths
