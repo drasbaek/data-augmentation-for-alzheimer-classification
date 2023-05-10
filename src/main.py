@@ -137,7 +137,9 @@ def main():
     split_folders(inpath)
 
     # define augmentations
-    augmentations = None
+    augmentations = {
+        "rotation_range": 20,
+        "zoom_range": 0.15}
 
     # load data
     train_data, val_data, test_data = load_data(inpath, "train", shuffle=True, augmentations=augmentations)
