@@ -250,20 +250,11 @@ def main():
         verbose=1
     )
 
-    # save classification report
-    y_pred = model.predict(test_data)
-
-    # get the predicted classes
-    y_pred = np.argmax(y_pred, axis=1)
-
-    # get the true classes
-    y_true = test_data.classes
-
-    # get the class names
-    target_names = list(test_data.class_indices.keys())
+    # get predicted classes
+    y_pred = model.predict(test_data).argmax(axis=1)
 
     # save classification report
-    save_classification_report(outpath, y_true, y_pred, target_names)
+    save_classification_report(outpath, test_data.classes, y_pred, test_data.class_indices.keys())
 
 
 
