@@ -29,6 +29,27 @@ import pandas as pd
 import numpy as np
 from keras.utils import Sequence
 
+import argparse
+import json
+
+def arg_parse():
+    # construct the argument parse and parse the arguments
+    parser = argparse.ArgumentParser()
+
+    # add argument
+    parser.add_argument("-a", "--augmentation", type=str, default=None,)
+
+    # parse arguments
+    args = parser.parse_args()
+
+    # check if augmentation type is given
+    if args.augmentation:
+        augmentation = json.loads(args.augmentation)
+    
+    else:
+        augmentation = None
+
+    return augmentation
 
 def define_paths():
     '''
@@ -100,13 +121,15 @@ class CustomDataGenerator(Sequence):
         return x, y
 
 
-def load_data_subset(inpath, rel_path, shuffle=True, augmentations=None):
+def load_data_subset(inpath, rel_path, augmentations):
     path = inpath / "dataset_split"
 
     if rel_path == "train":
         generator = ImageDataGenerator(augmentations, preprocessing_function=preprocess_input)
+        shuffle = True
     else:
         generator = ImageDataGenerator(preprocessing_function=preprocess_input)
+        shuffle = False
 
     data_subset = generator.flow_from_directory(
         directory=path / rel_path,
@@ -119,20 +142,20 @@ def load_data_subset(inpath, rel_path, shuffle=True, augmentations=None):
     return data_subset
 
 
-def load_data(inpath, rel_path, shuffle=True, augmentations=None):
+def load_data(inpath, augmentations):
     if augmentations != None:
-        train_data_augmented = load_data_subset(inpath, "train", shuffle=True, augmentations=augmentations)
-        train_data_original = load_data_subset(inpath, "train", shuffle=True)
+        train_data_augmented = load_data_subset(inpath, "train", augmentations=augmentations)
+        train_data_original = load_data_subset(inpath, "train", augmentations=None)
         train_data = CustomDataGenerator(train_data_original, train_data_augmented)
     
     else:
-        train_data = load_data_subset(inpath, "train", shuffle=True)
+        train_data = load_data_subset(inpath, "train", augmentations=None)
 
     # load validation data
-    val_data = load_data_subset(inpath, "val", shuffle=False)
+    val_data = load_data_subset(inpath, "val", augmentations=None)
 
     # load test data
-    test_data = load_data_subset(inpath, "test", shuffle=False)
+    test_data = load_data_subset(inpath, "test", augmentations=None)
 
     return train_data, val_data, test_data
 
@@ -163,7 +186,7 @@ def build_model():
     model.add(Dense(4,"softmax"))
 
     # print model card
-    model.summary()
+    #model.summary()
 
     # compile the model
     model.compile(
@@ -175,18 +198,19 @@ def build_model():
 
 
 def main():
+    # parse arguments
+    augmentation = arg_parse()
+
+    print(augmentation)
+
     # define paths
     inpath, outpath = define_paths()
 
     # split folders
     split_folders(inpath)
 
-    # define augmentation for increasing 
-    #augmentations = {"brightness_range": (1.2, 1.7)}
-    augmentations = None
-
     # load data
-    train_data, val_data, test_data = load_data(inpath, "train", shuffle=True, augmentations=augmentations)
+    train_data, val_data, test_data = load_data(inpath, augmentations=augmentation)
 
     # build model
     model = build_model()
