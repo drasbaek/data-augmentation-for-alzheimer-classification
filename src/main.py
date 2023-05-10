@@ -2,10 +2,10 @@
 import tensorflow as tf
 
 # image processsing
-from tensorflow.keras.preprocessing.image import (ImageDataGenerator)
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # layers
-from tensorflow.keras.layers import (Rescaling, Conv2D, MaxPooling2D, Dropout, Dense, Flatten)
+from tensorflow.keras.layers import Rescaling, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
 # generic model object
 from tensorflow.keras.models import Sequential
 
@@ -25,6 +25,7 @@ import numpy as np
 from keras.utils import Sequence
 
 import argparse
+import json
 
 def arg_parse():
     # construct the argument parse and parse the arguments
@@ -35,6 +36,8 @@ def arg_parse():
     parser.add_argument("-w", "--zca_whitening", type=bool, default=False)
     parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
     parser.add_argument("-f", "--horizontal_flip", type=bool, default=False)
+    parser.add_argument("-n", "--name", type=str, default="baseline")
+
 
     # parse arguments
     args = parser.parse_args()
@@ -78,7 +81,7 @@ def split_folders(inpath):
         outpath.mkdir()
         
         # split the data into train, validation and test folders
-        splitfolders.ratio(inpath, output=outpath, seed=2502, ratio=(.75, .125, .125))
+        splitfolders.ratio(inpath, output=outpath, seed=2502, ratio=(.7, .1, .2))
     
 
 class CustomDataGenerator(Sequence):
@@ -120,15 +123,14 @@ def load_data_subset(inpath, rel_path, args=None):
         generator = ImageDataGenerator(brightness_range = args.brightness_range, 
                                         zca_whitening = args.zca_whitening,
                                         zoom_range = args.zoom_range,
-                                        horizontal_flip = args.horizontal_flip,
-                                        preprocessing_function=preprocess_input)
+                                        horizontal_flip = args.horizontal_flip)
         shuffle = True
     
     elif rel_path == "train" and args == None:
-        generator = ImageDataGenerator(preprocessing_function=preprocess_input)
+        generator = ImageDataGenerator()
         shuffle = True
     else:
-        generator = ImageDataGenerator(preprocessing_function=preprocess_input)
+        generator = ImageDataGenerator()
         shuffle = False
 
     data_subset = generator.flow_from_directory(
@@ -142,7 +144,7 @@ def load_data_subset(inpath, rel_path, args=None):
     return data_subset
 
 
-def load_data(inpath, args):
+def load_all_data(inpath, args):
     # check if all arguments are default
     if all([
         args.brightness_range == [1, 1],
@@ -170,7 +172,6 @@ def build_model():
     '''
     Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but made own altercations
     '''
-
     model = Sequential()
     model.add(Rescaling(1./255, input_shape=(128,128, 3)))
     model.add(Conv2D(filters=16,kernel_size=(7,7),padding='same',activation='relu',kernel_initializer="he_normal"))
@@ -202,12 +203,31 @@ def build_model():
     )
     return model
 
+def save_classification_report(outpath, aug_type, y_true, y_pred, target_names):
+    '''
+    Saves a classification report as a text file.
+
+    Args:
+    -   outpath (pathlib.PosixPath): Path to where the classification report should be saved.
+    -   y_true (numpy.ndarray): Array containing the true labels.
+    -   y_pred (numpy.ndarray): Array containing the predicted labels.
+    -   target_names (list): List containing the names of the classes (neccessary for the classification to look nice)
+
+    '''
+
+    # create classification report
+    report = classification_report(y_true, y_pred, target_names=target_names)
+
+    # save report
+    with open(outpath / f"{aug_type}_clf_report.txt", "w") as f:
+        f.write(report)
+    
+    print(report)
+    
 
 def main():
     # parse arguments
     args = arg_parse()
-
-    print(args.brightness_range)
 
     # define paths
     inpath, outpath = define_paths()
@@ -216,7 +236,7 @@ def main():
     split_folders(inpath)
 
     # load data
-    train_data, val_data, test_data = load_data(inpath, args)
+    train_data, val_data, test_data = load_all_data(inpath, args)
 
     # build model
     model = build_model()
@@ -226,9 +246,26 @@ def main():
         train_data,
         validation_data=val_data,
         batch_size=64,
-        epochs=20,
+        epochs=4,
         verbose=1
     )
+
+    # save classification report
+    y_pred = model.predict(test_data)
+
+    # get the predicted classes
+    y_pred = np.argmax(y_pred, axis=1)
+
+    # get the true classes
+    y_true = test_data.classes
+
+    # get the class names
+    target_names = list(test_data.class_indices.keys())
+
+    # save classification report
+    save_classification_report(outpath, y_true, y_pred, target_names)
+
+
 
 if __name__ == "__main__":
     main()
