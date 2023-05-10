@@ -139,21 +139,16 @@ def load_data(inpath, rel_path, shuffle=True, augmentations=None):
 
 def build_model():
     '''
-    Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook
+    Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but made own altercations
     '''
 
     model = Sequential()
     model.add(Rescaling(1./255, input_shape=(128,128, 3)))
-    model.add(Conv2D(filters=16,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer="he_normal"))
+    model.add(Conv2D(filters=16,kernel_size=(7,7),padding='same',activation='relu',kernel_initializer="he_normal"))
     model.add(MaxPooling2D(pool_size=(2,2)))
 
 
-    model.add(Conv2D(filters=32,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer="he_normal"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-
-    model.add(Dropout(0.20))
-
-    model.add(Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer="he_normal"))
+    model.add(Conv2D(filters=32,kernel_size=(5,5),padding='same',activation='relu',kernel_initializer="he_normal"))
     model.add(MaxPooling2D(pool_size=(2,2)))
 
     model.add(Dropout(0.20))
@@ -187,7 +182,8 @@ def main():
     split_folders(inpath)
 
     # define augmentation for increasing 
-    augmentations = {"brightness_range": (1.2, 1.7)}
+    #augmentations = {"brightness_range": (1.2, 1.7)}
+    augmentations = None
 
     # load data
     train_data, val_data, test_data = load_data(inpath, "train", shuffle=True, augmentations=augmentations)
