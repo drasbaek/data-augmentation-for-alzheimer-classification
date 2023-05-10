@@ -3,16 +3,11 @@ import tensorflow as tf
 
 # image processsing
 from tensorflow.keras.preprocessing.image import (ImageDataGenerator)
-# VGG16 model
-from tensorflow.keras.applications.efficientnet_v2 import (preprocess_input,
-                                                 EfficientNetV2M)
+
 # layers
 from tensorflow.keras.layers import (Rescaling, Conv2D, MaxPooling2D, Dropout, Dense, Flatten)
 # generic model object
-from tensorflow.keras.models import Sequential, Model
-
-# optimizers
-from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Sequential
 
 #scikit-learn
 from sklearn.metrics import classification_report
@@ -30,7 +25,6 @@ import numpy as np
 from keras.utils import Sequence
 
 import argparse
-import json
 
 def arg_parse():
     # construct the argument parse and parse the arguments
