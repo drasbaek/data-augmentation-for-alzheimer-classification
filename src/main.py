@@ -4,8 +4,8 @@ import tensorflow as tf
 # image processsing
 from tensorflow.keras.preprocessing.image import (ImageDataGenerator)
 # VGG16 model
-from tensorflow.keras.applications.vgg16 import (preprocess_input,
-                                                 VGG16)
+from tensorflow.keras.applications.efficientnet_v2 import (preprocess_input,
+                                                 EfficientNetV2M)
 # layers
 from tensorflow.keras.layers import (Flatten, 
                                      Dense)
@@ -71,6 +71,15 @@ def split_folders(inpath):
     
 
 class CustomDataGenerator(Sequence):
+    '''
+    Class for creating a custom data generator that allows both original and augmented images to be used simultaneously.
+
+    Args:
+    -   original_generator (ImageDataGenerator): Generator for original images.
+    -   augmented_generator (ImageDataGenerator): Generator for augmented images.
+
+    '''
+
     def __init__(self, original_generator, augmented_generator):
         self.original_generator = original_generator
         self.augmented_generator = augmented_generator
@@ -96,9 +105,9 @@ def load_data_subset(inpath, rel_path, shuffle=True, augmentations=None):
     path = inpath / "dataset_split"
 
     if rel_path == "train":
-        generator = ImageDataGenerator(augmentations)
+        generator = ImageDataGenerator(augmentations, preprocessing_function=preprocess_input)
     else:
-        generator = ImageDataGenerator()
+        generator = ImageDataGenerator(preprocessing_function=preprocess_input)
 
     data_subset = generator.flow_from_directory(
         directory=path / rel_path,
@@ -144,8 +153,56 @@ def main():
     # load data
     train_data, val_data, test_data = load_data(inpath, "train", shuffle=True, augmentations=augmentations)
 
+    # load efficientnet model
+    model = EfficientNetV2M(
+        include_top=False,
+        weights="imagenet",
+        input_shape=(128, 128, 3)
+    )
 
+    # freeze the layers
+    for layer in model.layers:
+        layer.trainable = False
 
+    # flatten the output of the model
+    flatten = Flatten()(model.output)
+
+    # add a dense layer
+    dense = Dense(128, activation="relu")(flatten)
+
+    # add a dense layer
+    dense = Dense(64, activation="relu")(dense)
+
+    # add a dense layer
+    dense = Dense(32, activation="relu")(dense)
+
+    # add output layer
+    output = Dense(4, activation="softmax")(dense)
+
+    # define learning rate schedule
+    lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+        initial_learning_rate=0.01,
+        decay_steps=10000,
+        decay_rate=0.9)
+    sgd = SGD(learning_rate=lr_schedule)
+
+    # define the model
+    model = Model(inputs=model.inputs, outputs=output)
+
+    # compile the model
+    model.compile(
+        optimizer=sgd,
+        loss="categorical_crossentropy",
+        metrics=["accuracy"]
+    )
+
+    # fit the model
+    history = model.fit(
+        train_data,
+        validation_data=val_data,
+        epochs=10,
+        verbose=1
+    )
 
 if __name__ == "__main__":
     main()
