@@ -161,3 +161,4 @@ cython_debug/
 
 /in
 .DS_Store
+/aug_alzheimers_env
