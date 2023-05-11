@@ -23,5 +23,5 @@ python3 ./src/main.py --zca_whitening True --name "zca_whitening"
 echo "Running augmentation: zoomed_in"
 python3 ./src/main.py --zoom_range 1.2 1.7 --name "zoomed_in"
 
-echo "Running augmentation: zoomed_out"
+echo "Running augmentation: horizontal_flip"
 python3 ./src/main.py --horizontal_flip True --name "horizontal_flip"
