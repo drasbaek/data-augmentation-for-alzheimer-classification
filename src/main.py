@@ -173,7 +173,7 @@ def build_model():
     Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but made own altercations
     '''
     model = Sequential()
-    model.add(Rescaling(1./255, input_shape=(128,128, 3)))
+    model.add(Rescaling(1./255, input_shape=(128,128,3)))
     model.add(Conv2D(filters=16,kernel_size=(7,7),padding='same',activation='relu',kernel_initializer="he_normal"))
     model.add(MaxPooling2D(pool_size=(2,2)))
 
@@ -203,7 +203,46 @@ def build_model():
     )
     return model
 
-def save_classification_report(outpath, aug_type, y_true, y_pred, target_names):
+def initialize_outputs(outpath, args):
+    # get name for output folder
+    name = args.name
+
+    # name a new folder in output after name if it does not exist already
+    if not (outpath / name).exists():
+        (outpath / name).mkdir()
+
+
+def plot_history(history, outpath, args):
+    '''
+    Creates and saves a plot displaying the training and validation loss.
+
+    Args:
+    -   history (tensorflow.python.keras.callbacks.History): History object containing the training and validation loss.
+    -   outpath (pathlib.PosixPath): Path to where the plots should be saved.
+    '''
+
+    # plot training loss history
+    plt.plot(history.history['loss'], label='train')
+
+    # plot validation loss history
+    plt.plot(history.history['val_loss'], label='val')
+
+    # add title
+    plt.title(f'{args.name}: Training and validation loss')
+
+    # add x label
+    plt.xlabel('Epoch')
+
+    # add y label
+    plt.ylabel('Loss')
+
+    # add legend
+    plt.legend()
+
+    # save plot
+    plt.savefig(outpath / args.name / f"{args.name}_loss.png")
+
+def save_classification_report(outpath, args, y_true, y_pred, target_names):
     '''
     Saves a classification report as a text file.
 
@@ -219,7 +258,7 @@ def save_classification_report(outpath, aug_type, y_true, y_pred, target_names):
     report = classification_report(y_true, y_pred, target_names=target_names)
 
     # save report
-    with open(outpath / f"{aug_type}_clf_report.txt", "w") as f:
+    with open(outpath / args.name / f"{args.name}_clf_report.txt", "w") as f:
         f.write(report)
     
     print(report)
@@ -250,11 +289,17 @@ def main():
         verbose=1
     )
 
+    # initialize output folder
+    initialize_outputs(outpath, args)
+
+    # plot history
+    plot_history(history, outpath, args)
+
     # get predicted classes
     y_pred = model.predict(test_data).argmax(axis=1)
 
     # save classification report
-    save_classification_report(outpath, test_data.classes, y_pred, test_data.class_indices.keys())
+    save_classification_report(outpath, args, test_data.classes, y_pred, test_data.class_indices.keys())
 
 
 
