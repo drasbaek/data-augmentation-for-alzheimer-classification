@@ -172,15 +172,16 @@ def build_model():
     Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but heavily simplified and small alterations made.
     '''
     model = Sequential()
+
+    # create a 1-dimensional embedding
     model.add(Rescaling(1./255, input_shape=(128,128,3)))
-
-    model.add(Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-    model.add(Dropout(0.20))
-
+    model.add(Conv2D(filters=1,kernel_size=(3,3),padding='same',activation='relu'))
+    model.add(Dropout(0.4)) # big dropout to avoid overfitting
     model.add(Flatten())
+
+    # classify with 3 layer NN
     model.add(Dense(128,activation="relu"))
-    model.add(Dense(64,"relu"))
+    model.add(Dense(64,activation="relu"))
     model.add(Dense(4,"softmax"))
 
     # print model card
@@ -202,36 +203,39 @@ def initialize_outputs(outpath, args):
     if not (outpath / name).exists():
         (outpath / name).mkdir()
 
-
 def plot_history(history, outpath, args):
     '''
-    Creates and saves a plot displaying the training and validation loss.
+    Creates and saves a plot displaying the training and validation loss and accuracy.
 
     Args:
-    -   history (tensorflow.python.keras.callbacks.History): History object containing the training and validation loss.
+    -   history (tensorflow.python.keras.callbacks.History): History object containing the training and validation loss and accuracy.
     -   outpath (pathlib.PosixPath): Path to where the plots should be saved.
     '''
 
-    # plot training loss history
-    plt.plot(history.history['loss'], label='train')
+    # Create a new figure with subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 10))
 
-    # plot validation loss history
-    plt.plot(history.history['val_loss'], label='val')
+    # Plot training and validation loss
+    ax1.plot(history.history['loss'], label='train')
+    ax1.plot(history.history['val_loss'], label='val')
+    ax1.set_title(f'{args.name}: Training and validation loss')
+    ax1.set_xlabel('Epoch')
+    ax1.set_ylabel('Loss')
+    ax1.legend()
 
-    # add title
-    plt.title(f'{args.name}: Training and validation loss')
+    # Plot training and validation accuracy
+    ax2.plot(history.history['accuracy'], label='train')
+    ax2.plot(history.history['val_accuracy'], label='val')
+    ax2.set_title(f'{args.name}: Training and validation accuracy')
+    ax2.set_xlabel('Epoch')
+    ax2.set_ylabel('Accuracy')
+    ax2.legend()
 
-    # add x label
-    plt.xlabel('Epoch')
+    # Adjust the spacing between subplots
+    fig.tight_layout()
 
-    # add y label
-    plt.ylabel('Loss')
-
-    # add legend
-    plt.legend()
-
-    # save plot
-    plt.savefig(outpath / args.name / f"{args.name}_loss.png")
+    # Save the plot
+    plt.savefig(outpath / args.name / f"{args.name}_loss_and_accuracy.png")
 
 def save_classification_report(outpath, args, y_true, y_pred, target_names):
     '''
@@ -249,6 +253,7 @@ def save_classification_report(outpath, args, y_true, y_pred, target_names):
     report = classification_report(y_true, y_pred, target_names=target_names)
 
     # save report
+    
     with open(outpath / args.name / f"{args.name}_clf_report.txt", "w") as f:
         f.write(report)
     
@@ -277,8 +282,8 @@ def main():
     history = model.fit(
         train_data,
         validation_data=val_data,
-        batch_size=64,
-        epochs=10,
+        batch_size=16,
+        epochs=15,
         verbose=1
     )
 
