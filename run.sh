@@ -6,11 +6,11 @@ python3 -m venv aug_alzheimers_env
 source ./aug_alzheimers_env/bin/activate
 
 # install requirements
-echo "Running augmentations..."
+echo "Install Requirements"
 python3 -m pip install -r requirements.txt
 
 # run baseline
-echo "Running augmentations..."
+echo "Running non-augmented baseline"
 python3 ./src/main.py
 
 # run augmentations
