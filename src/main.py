@@ -36,7 +36,7 @@ def arg_parse():
     parser.add_argument("-w", "--zca_whitening", type=bool, default=False)
     parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
     parser.add_argument("-f", "--horizontal_flip", type=bool, default=False)
-    parser.add_argument("-n", "--name", type=str, default="baseline")
+    parser.add_argument("-n", "--name", type=str, default="no_augmentation")
 
 
     # parse arguments
@@ -75,13 +75,12 @@ def split_folders(inpath):
     # define output dir
     outpath = inpath / "dataset_split"
 
-    # check if the folder exists already
+    # check if the folder exists already (this ensures that we only do the split for the first run)
     if not outpath.exists():
-        # create the folder
-        outpath.mkdir()
+        print("Splitting Data...")
         
         # split the data into train, validation and test folders
-        splitfolders.ratio(inpath, output=outpath, seed=2502, ratio=(.7, .1, .2))
+        splitfolders.ratio(inpath / "Dataset", output=outpath, seed=2502, ratio=(.7, .1, .2))
     
 
 class CustomDataGenerator(Sequence):
@@ -170,25 +169,17 @@ def load_all_data(inpath, args):
 
 def build_model():
     '''
-    Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but made own altercations
+    Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but heavily simplified and small alterations made.
     '''
     model = Sequential()
     model.add(Rescaling(1./255, input_shape=(128,128,3)))
-    model.add(Conv2D(filters=16,kernel_size=(7,7),padding='same',activation='relu',kernel_initializer="he_normal"))
+
+    model.add(Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu'))
     model.add(MaxPooling2D(pool_size=(2,2)))
-
-
-    model.add(Conv2D(filters=32,kernel_size=(5,5),padding='same',activation='relu',kernel_initializer="he_normal"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-
     model.add(Dropout(0.20))
 
-    model.add(Conv2D(filters=64,kernel_size=(3,3),padding='same',activation='relu',kernel_initializer="he_normal"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-
-    model.add(Dropout(0.25))
     model.add(Flatten())
-    model.add(Dense(128,activation="relu",kernel_initializer="he_normal"))
+    model.add(Dense(128,activation="relu"))
     model.add(Dense(64,"relu"))
     model.add(Dense(4,"softmax"))
 
@@ -280,12 +271,14 @@ def main():
     # build model
     model = build_model()
 
+    model.summary()
+
     # fit the model
     history = model.fit(
         train_data,
         validation_data=val_data,
         batch_size=64,
-        epochs=4,
+        epochs=10,
         verbose=1
     )
 
