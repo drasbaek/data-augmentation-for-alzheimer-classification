@@ -12,7 +12,7 @@ python3 -m pip install -r requirements.txt
 python3 ./src/main.py
 
 # run augmentations
-python3 ./src/main.py --brightness_range 1.2, 1.7 --name "increased_brightness"
+python3 ./src/main.py --brightness_range 1.2 1.7 --name "increased_brightness"
 python3 ./src/main.py --zca_whitening True --name "zca_whitening"
-python3 ./src/main.py --zoom_range 1.2, 1.7 --name "zoomed_in"
+python3 ./src/main.py --zoom_range 1.2 1.7 --name "zoomed_in"
 python3 ./src/main.py --horizontal_flip True --name "horizontal_flip"
