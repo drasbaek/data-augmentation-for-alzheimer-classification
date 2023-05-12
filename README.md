@@ -40,3 +40,8 @@ The `main.py` script only supports the four specified augmentation types, but th
 To do this, you can run `main.py` directly, specifying arguments as such
 ```
 ```
+
+
+## Results
+<img width="506" alt="Screenshot 2023-05-12 at 08 38 35" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/c4d8c394-5db7-4c1b-8751-8ee128727890">
+
