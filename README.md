@@ -3,9 +3,19 @@
 ## Description
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
-This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a pre-trained CNN. The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
+This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a convolutional neural network. The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
 
 ## Methodology
+The model used for classifying the images is a simple convolutional network. For the full model stucture, please refer to the function `build_model()` in `main.py`. The model structure is the same for all augmentations. <br>
+
+The explored augmentations on the images are:
+* Increased Brightness
+* ZCA Whitening
+* Increased Zoom
+* Horizontal Flip
+
+Below, you can see examples of what these augmentations do to the images:
+
 
 
 ## Repository Tree <a name="tree"></a>
