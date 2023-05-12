@@ -10,9 +10,17 @@ This project attempts to classify varying degrees of the alzheimers diseased bas
 
 ```
 
-## Run Analysis <a name="analysis"></a>
-To run the analysis, you must only have Python 3 installed and clone this GitHub repository. <br>
+## Usage <a name="analysis"></a>
+### Setup
+
+To run the analysis, you must have Python 3 installed and clone this GitHub repository. <br>
+You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded)
+
 The analysis is conducted by running the `main.py` file with varying arguments to fulfill the various augmentation types. <br> To run the entire analysis with all augmentations, you should use the `run.sh` bash script as such from the root directory.
+
+### Run
+
+Setting up an environment, installing requirements and running the analysis is all achieved with the following command 
 ```
 bash run.sh
 ```
