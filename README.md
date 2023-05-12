@@ -43,5 +43,6 @@ To do this, you can run `main.py` directly, specifying arguments as such
 
 
 ## Results
-<img width="506" alt="Screenshot 2023-05-12 at 08 38 35" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/c4d8c394-5db7-4c1b-8751-8ee128727890">
+<img width="504" alt="Screenshot 2023-05-12 at 08 41 29" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/9dce8870-0dda-4d0a-ac5a-d5e8112f314b">
+
 
