@@ -10,7 +10,7 @@ This project attempts to classify varying degrees of the alzheimers diseased bas
 
 ```
 
-## Usage <a name="analysis"></a>
+## General Usage <a name="analysis"></a>
 ### Setup
 
 To run the analysis, you must have Python 3 installed and clone this GitHub repository. <br>
@@ -27,7 +27,7 @@ bash run.sh
 This will produce classification reports and loss plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
 
 
-## Run Modified Analysis <a name="modified_analysis"></a>
+## Modified Usage <a name="modified_analysis"></a>
 ### Setup
 To run a modified analysis or only part of the full analysis, you should first install requirements and setup the virtual environment
 
