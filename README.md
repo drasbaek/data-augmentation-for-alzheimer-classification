@@ -51,10 +51,10 @@ bash setup.sh
 The `main.py` script only supports the four specified augmentation types, but their ranges can be altered and the augmentations can be combined. <br> 
 To do this, you can run `main.py` directly with the following arguments
 ```
---brightness_range (default: 1 1) (range used in augmented run: 1.2 1.7)
---zca_whitening (default: False) (frange used in augmented run: True)
---zoom_range (default: 1, 1) (range used in augmented run: 1.2 1.7)
---horizontal_flip (default: 1, 1) (range used in augmented run: True)
+--brightness_range (default: 1 1) (range used in augmented run: 1.5 1.6)
+--shear_range (default: 0) (frange used in augmented run: 40)
+--zoom_range (default: 1, 1) (range used in augmented run: 0.75 0.8)
+--rotation_range (default: 0) (range used in augmented run: 180)
 --name (no default, must be specified)
 ```
 For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
