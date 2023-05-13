@@ -152,9 +152,9 @@ def load_all_data(inpath, args):
     # check if all arguments are default (i.e. no augmentation)
     if all([
         args.brightness_range == [1, 1],
-        not args.zca_whitening,
+        args.shear_range == 0,
         args.zoom_range == [1, 1],
-        not args.horizontal_flip
+        args.rotation == 0
     ]):
         train_data = load_data_subset(inpath, "train")
 
@@ -288,7 +288,7 @@ def main():
         train_data,
         validation_data=val_data,
         batch_size=16,
-        epochs=15,
+        epochs=12,
         verbose=1
     )
 
