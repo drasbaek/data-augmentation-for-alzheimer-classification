@@ -31,9 +31,9 @@ def arg_parse():
 
     # add argument
     parser.add_argument("-b", "--brightness_range", nargs="+", type=float, default=[1, 1])
-    parser.add_argument("-w", "--zca_whitening", type=bool, default=False)
+    parser.add_argument("-s", "--shear_range", type=int, default=0)
     parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
-    parser.add_argument("-f", "--horizontal_flip", type=bool, default=False)
+    parser.add_argument("-r", "--rotation", type=int, default=0)
     parser.add_argument("-n", "--name", type=str)
 
 
@@ -120,12 +120,12 @@ def load_data_subset(inpath, rel_path, args=None):
     # checks if we use augmentation
     if rel_path == "train" and args != None:
         generator = ImageDataGenerator(brightness_range = args.brightness_range, 
-                                        zca_whitening = args.zca_whitening,
+                                        shear_range = args.shear_range,
                                         zoom_range = args.zoom_range,
-                                        horizontal_flip = args.horizontal_flip)
+                                        rotation_range = args.horizontal_flip)
         shuffle = True
     
-    # check if we use training data (must be shuffled)
+    # check if we use training dat, must be shuffled
     elif rel_path == "train" and args == None:
         generator = ImageDataGenerator()
         shuffle = True
@@ -176,6 +176,8 @@ def load_all_data(inpath, args):
 def build_model():
     '''
     Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but heavily simplified and small alterations made.
+
+    It is a simple convolutional neural network with a dense layer on top.
     '''
     model = Sequential()
 
