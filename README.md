@@ -3,7 +3,20 @@
 ## Description
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
-This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a pre-trained CNN. The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
+This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a convolutional neural network. The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
+
+## Methodology
+The model used for classifying the images is a simple convolutional network. For the full model stucture, please refer to the function `build_model()` in `main.py`. The model structure is the same for all augmentations. <br>
+
+The explored augmentations on the images are:
+* Increased Brightness
+* ZCA Whitening
+* Increased Zoom
+* Horizontal Flip
+
+Below, you can see examples of what these augmentations do to the images:
+
+
 
 ## Repository Tree <a name="tree"></a>
 ```
@@ -37,8 +50,19 @@ bash setup.sh
 
 ### Running main.py
 The `main.py` script only supports the four specified augmentation types, but their ranges can be altered and the augmentations can be combined. <br> 
-To do this, you can run `main.py` directly, specifying arguments as such
+To do this, you can run `main.py` directly with the following arguments
 ```
+--brightness_range (default: 1 1) (range used in augmented run: 1.2 1.7)
+--zca_whitening (default: False) (frange used in augmented run: True)
+--zoom_range (default: 1, 1) (range used in augmented run: 1.2 1.7)
+--horizontal_flip (default: 1, 1) (range used in augmented run: True)
+--name (no default, must be specified)
+```
+For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
+
+For instance:
+```
+python3 src/main.py --zca_whitening True --zoom_range 1.5 1.9 --name "zoom_and_whitening"
 ```
 
 
