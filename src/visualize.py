@@ -3,78 +3,106 @@ import matplotlib.pyplot as plt
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 
-def augment_image(augmentation_params):
+def augment_image(inpath, augmentation_params):
     """
-    Augments an image using a given data generator and augmentation parameters.
-    Takes the mean over the specified number of channels.
+    Augment image using ImageDataGenerator.
+    It only augments a single image, to be used for visualization.
 
-    :param data_generator: Keras ImageDataGenerator instance
-    :param augmentation_params: Dictionary of augmentation parameters
-    :param num_channels: Number of channels to use for mean calculation
-    :return: Augmented image with mean taken over the specified channels
+    Args:
+    -   inpath (pathlib.PosixPath): Path to input data.
+    -   augmentation_params (dict): Dictionary of augmentation parameters.
+
+    Returns:
+    -   img (np.array): Augmented image.
     """
+
+    # define data generator
     datagen = ImageDataGenerator(**augmentation_params)
-    data_generator = datagen.flow_from_directory(data_generator.directory,
-                                                  target_size=data_generator.target_size,
-                                                  batch_size=data_generator.batch_size,
-                                                  shuffle=data_generator.shuffle,
-                                                  class_mode=data_generator.class_mode)
-    
+
+    # create generator
+    data_generator = datagen.flow_from_directory(inpath,
+                                                  target_size=(128, 128),
+                                                  batch_size=1,
+                                                  shuffle=False,
+                                                  class_mode="categorical")
+    # get image
     img = data_generator.next()[0][0]
+
+    # convert to grayscale (it already is grayscale, but has 3 channels)
     img = img.mean(axis=2)
     
     return img
 
-# define path
-path = Path(__file__)
+import matplotlib.pyplot as plt
+import numpy as np
 
-# define inpath
-inpath = path.parents[1] / "in" / "dataset_split" / "train"
+def illustrate_augmentations(images, titles, outpath):
+    """
+    Illustrate augmentations.
 
-# define outpath
-outpath = path.parents[1] / "out"
+    Args:
+    -   images (list): List of images.
+    -   titles (list): List of titles.
+    -   outpath (pathlib.PosixPath): Path to output directory.
+    """
 
-# augment image using data generator (horizontal flip)
-augmentation_params = {'shear_range': 30}
-horizontal_img = augment_image(augmentation_params)
+    # set up plot parameters
+    fig, ax = plt.subplots(1, 5, figsize=(15, 3))
+    fig.subplots_adjust(wspace=0.05)
 
+    # plot images
+    for i in range(len(images)):
+        ax[i].imshow(images[i], cmap="gray")
+        ax[i].set_title(titles[i], fontsize=12, fontweight="bold", fontfamily="serif")
+        ax[i].set_xticks([])
+        ax[i].set_yticks([])
 
-'''
-# augment image using data generator (horizontal flip)
-datagen = ImageDataGenerator(shear_range=30)
-data_generator = datagen.flow_from_directory(inpath, target_size=(128, 128), batch_size=1, shuffle=False, class_mode="categorical")
+    plt.show()
 
-# get first image from generator
-horizontal_img = data_generator.next()[0][0]
-
-# take mean over all channels
-horizontal_img = horizontal_img.mean(axis=2)
-
-# augment image using data generator (increased brightness)
-datagen = ImageDataGenerator()
-data_generator = datagen.flow_from_directory(inpath, target_size=(128, 128), batch_size=1, shuffle=False, class_mode="categorical")
-
-# get first image from generator
-bright_img = data_generator.next()[0][0]
-
-# take mean over all channels
-bright_img = bright_img.mean(axis=2)
-'''
+    # save figure with both images
+    fig.savefig(outpath / "aug_illustration.png", dpi=300, bbox_inches="tight")
 
 
 
+def main():
+    # define path
+    path = Path(__file__)
 
+    # define inpath
+    inpath = path.parents[1] / "in" / "dataset_split" / "train"
 
-# plot images
-fig, ax = plt.subplots(1, 2)
-ax[0].imshow(bright_img)
-ax[0].set_title("Original Image")
-ax[1].imshow(horizontal_img)
-ax[1].set_title("ZCA Whitening")
-plt.show()
+    # define outpath
+    outpath = path.parents[1] / "out"
 
-# save figure with both images
-fig.savefig(outpath / "augmented_image.png", dpi=300, bbox_inches="tight")
+    # define all augmentations as a list of dictionaries
+    augmentations = [
+        {},
+        {'brightness_range': [1.5, 1.6]},
+        {'shear_range': 40},
+        {'zoom_range': [0.75, 0.8]},
+        {'rotation_range': 180}
+    ]
+
+    # define list of titles
+    titles = [
+        "No Augmentation",
+        "Increased Brightness",
+        "Shear",
+        "Zoomed In",
+        "Rotation"]
+
+    # get image using each augmentation
+    images = []
+
+    for augmentation in augmentations:
+        img = augment_image(inpath, augmentation)
+        images.append(img)
+
+    illustrate_augmentations(images, titles, outpath)
+
+if __name__ == "__main__":
+    main()
+
 
 
 
