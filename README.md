@@ -15,7 +15,7 @@ The explored augmentations on the images are:
 * Horizontal Flip
 
 Below, you can see examples of what these augmentations do to the images:
-
+![alt text](https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/blob/main/out/aug_illustration.png?raw=True)
 
 
 ## Repository Tree <a name="tree"></a>
