@@ -11,17 +11,17 @@ python3 -m pip install -r requirements.txt
 
 # run baseline
 echo "Running non-augmented baseline"
-python3 ./src/main.py
+python3 ./src/main.py --name "no_augmentation"
 
 # run augmentations
 echo "Running augmentation: increased_brightness"
-python3 ./src/main.py --brightness_range 1.2 1.7 --name "increased_brightness"
+python3 ./src/main.py --brightness_range 1.3 1.5 --name "increased_brightness"
 
 echo "Running augmentation: zca_whitening"
 python3 ./src/main.py --zca_whitening True --name "zca_whitening"
 
 echo "Running augmentation: zoomed_in"
-python3 ./src/main.py --zoom_range 1.2 1.7 --name "zoomed_in"
+python3 ./src/main.py --zoom_range 0.75 0.8 --name "zoomed_in"
 
 echo "Running augmentation: horizontal_flip"
 python3 ./src/main.py --horizontal_flip True --name "horizontal_flip"
