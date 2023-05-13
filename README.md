@@ -10,11 +10,10 @@ The model used for classifying the images is a simple convolutional network. For
 
 The explored augmentations on the images are:
 * Increased Brightness
-* ZCA Whitening
+* Shearing
 * Increased Zoom
-* Horizontal Flip
+* Rotation
 
-Below, you can see examples of what these augmentations do to the images:
 ![alt text](https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/blob/main/out/aug_illustration.png?raw=True)
 
 
