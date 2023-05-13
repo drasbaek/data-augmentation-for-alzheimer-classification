@@ -60,7 +60,7 @@ def illustrate_augmentations(images, titles, outpath):
     plt.show()
 
     # save figure with both images
-    fig.savefig(outpath / "aug_illustration.png", dpi=300, bbox_inches="tight")
+    fig.savefig(outpath / "aug_illustration.png", dpi=600, bbox_inches="tight")
 
 
 
