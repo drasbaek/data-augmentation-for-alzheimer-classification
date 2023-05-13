@@ -20,15 +20,13 @@ from pathlib import Path
 # splitting folders
 import splitfolders
 
-import pandas as pd
 import numpy as np
 from keras.utils import Sequence
 
 import argparse
-import json
 
 def arg_parse():
-    # construct the argument parse and parse the arguments
+    # initialize parser
     parser = argparse.ArgumentParser()
 
     # add argument
@@ -36,7 +34,7 @@ def arg_parse():
     parser.add_argument("-w", "--zca_whitening", type=bool, default=False)
     parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
     parser.add_argument("-f", "--horizontal_flip", type=bool, default=False)
-    parser.add_argument("-n", "--name", type=str, default="no_augmentation")
+    parser.add_argument("-n", "--name", type=str)
 
 
     # parse arguments
@@ -86,6 +84,7 @@ def split_folders(inpath):
 class CustomDataGenerator(Sequence):
     '''
     Class for creating a custom data generator that allows both original and augmented images to be used simultaneously.
+    This is necessary as we cannot simply merge the data as we are using generators.
 
     Args:
     -   original_generator (ImageDataGenerator): Generator for original images.
@@ -117,7 +116,8 @@ class CustomDataGenerator(Sequence):
 def load_data_subset(inpath, rel_path, args=None):
     # get path to the split dataset
     path = inpath / "dataset_split"
-
+    
+    # checks if we use augmentation
     if rel_path == "train" and args != None:
         generator = ImageDataGenerator(brightness_range = args.brightness_range, 
                                         zca_whitening = args.zca_whitening,
@@ -125,13 +125,17 @@ def load_data_subset(inpath, rel_path, args=None):
                                         horizontal_flip = args.horizontal_flip)
         shuffle = True
     
+    # check if we use training data (must be shuffled)
     elif rel_path == "train" and args == None:
         generator = ImageDataGenerator()
         shuffle = True
+    
+    # else validation or test data, must not be shuffled
     else:
         generator = ImageDataGenerator()
         shuffle = False
 
+    # load the data
     data_subset = generator.flow_from_directory(
         directory=path / rel_path,
         target_size=(128, 128),
@@ -144,7 +148,8 @@ def load_data_subset(inpath, rel_path, args=None):
 
 
 def load_all_data(inpath, args):
-    # check if all arguments are default
+    
+    # check if all arguments are default (i.e. no augmentation)
     if all([
         args.brightness_range == [1, 1],
         not args.zca_whitening,
@@ -152,7 +157,8 @@ def load_all_data(inpath, args):
         not args.horizontal_flip
     ]):
         train_data = load_data_subset(inpath, "train")
-    
+
+    # else load augmented and original data and merge them
     else:
         train_data_augmented = load_data_subset(inpath, "train", args)
         train_data_original = load_data_subset(inpath, "train")
@@ -173,19 +179,16 @@ def build_model():
     '''
     model = Sequential()
 
-    # create a 1-dimensional embedding
+    # create a one dimensional embedding of the image
     model.add(Rescaling(1./255, input_shape=(128,128,3)))
     model.add(Conv2D(filters=1,kernel_size=(3,3),padding='same',activation='relu'))
     model.add(Dropout(0.4)) # big dropout to avoid overfitting
     model.add(Flatten())
 
-    # classify with 3 layer NN
+    # classify the embedding with a simple dense network
     model.add(Dense(128,activation="relu"))
     model.add(Dense(64,activation="relu"))
     model.add(Dense(4,"softmax"))
-
-    # print model card
-    #model.summary()
 
     # compile the model
     model.compile(
@@ -210,6 +213,7 @@ def plot_history(history, outpath, args):
     Args:
     -   history (tensorflow.python.keras.callbacks.History): History object containing the training and validation loss and accuracy.
     -   outpath (pathlib.PosixPath): Path to where the plots should be saved.
+    -   args (argparse.Namespace): Namespace object containing the arguments passed to the script.
     '''
 
     # Create a new figure with subplots
@@ -253,7 +257,6 @@ def save_classification_report(outpath, args, y_true, y_pred, target_names):
     report = classification_report(y_true, y_pred, target_names=target_names)
 
     # save report
-    
     with open(outpath / args.name / f"{args.name}_clf_report.txt", "w") as f:
         f.write(report)
     
