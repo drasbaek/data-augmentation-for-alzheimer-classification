@@ -204,6 +204,8 @@ def initialize_outputs(outpath, args):
     # get name for output folder
     name = args.name
 
+    print(name)
+
     # name a new folder in output after name if it does not exist already
     if not (outpath / name).exists():
         (outpath / name).mkdir()
@@ -287,8 +289,8 @@ def main():
     history = model.fit(
         train_data,
         validation_data=val_data,
-        batch_size=16,
-        epochs=12,
+        batch_size=128,
+        epochs=10,
         verbose=1
     )
 
