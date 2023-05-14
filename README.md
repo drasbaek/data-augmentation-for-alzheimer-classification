@@ -66,7 +66,8 @@ python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom
 
 
 ## Results
-<img width="504" alt="Screenshot 2023-05-12 at 08 41 29" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/9dce8870-0dda-4d0a-ac5a-d5e8112f314b">
+<img width="601" alt="Screenshot 2023-05-14 at 19 42 48" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/f9849d9b-f9f1-4bc1-bb61-4216170ee1b4">
+
 
 ## Discussion
 The results indicate that data augmentation proved useful in detecting alzheimers overall. The most useful method proved to be increasing brightness in the images as this gave an F1-Score of xx, which is xx over the no augmentation baseline. This conforms with findings for most effective data augmentation type for 3D tumor detection (https://ieeexplore-ieee-org.ez.statsbiblioteket.dk/stamp/stamp.jsp?tp=&arnumber=9506328). Also, xx and xx proved to be useful augmentations
