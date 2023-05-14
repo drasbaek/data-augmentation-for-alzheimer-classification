@@ -122,7 +122,7 @@ def load_data_subset(inpath, rel_path, args=None):
         generator = ImageDataGenerator(brightness_range = args.brightness_range, 
                                         shear_range = args.shear_range,
                                         zoom_range = args.zoom_range,
-                                        rotation_range = args.horizontal_flip)
+                                        rotation_range = args.rotation_range)
         shuffle = True
     
     # check if we use training dat, must be shuffled
