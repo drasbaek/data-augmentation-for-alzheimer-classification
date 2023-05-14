@@ -6,13 +6,40 @@ This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk
 This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a convolutional neural network. The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
 
 ## Methodology
-The model used for classifying the images is a simple convolutional network. For the full model stucture, please refer to the function `build_model()` in `main.py`. The model structure is the same for all augmentations. <br>
+### Model Architecture
+The same architecture is used for all augmentations, a simple convolutional network. In brief, it rescales and uses a convlutional layer to flatten the input images. This flattened image then forms an embedding which is fed to a fully-connected network with three layers. The model card is as follows:
+```plaintext
+Model: "sequential"
+_________________________________________________________________
+Layer (type)                Output Shape              Param #
+=================================================================
+rescaling (Rescaling)       (None, 128, 128, 3)       0
+
+conv2d (Conv2D)             (None, 126, 126, 1)       28
+
+dropout (Dropout)           (None, 126, 126, 1)       0
+
+flatten (Flatten)           (None, 15876)             0
+
+dense (Dense)               (None, 128)               2032256
+
+dense_1 (Dense)             (None, 64)                8256
+
+dense_2 (Dense)             (None, 4)                 260
+=================================================================
+Total params: 2,040,800
+Trainable params: 2,040,800
+Non-trainable params: 0
+_________________________________________________________________
+```
+
+### Selected Augmentations
 
 The explored augmentations on the images are:
-* Increased Brightness
-* Shearing
-* Increased Zoom
-* Rotation
+* Increased Brightness (Shifts pixel intensities towards higher values)
+* Shearing (Rotates the image around its center while stretching it)
+* Increased Zoom (Zooms closer into the scan, removing much of the black background)
+* Rotation (Rotates image around its center)
 
 ![alt text](https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/blob/main/out/aug_illustration.png?raw=True)
 
@@ -66,7 +93,8 @@ python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom
 
 
 ## Results
-<img width="504" alt="Screenshot 2023-05-12 at 08 41 29" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/9dce8870-0dda-4d0a-ac5a-d5e8112f314b">
+<img width="601" alt="Screenshot 2023-05-14 at 19 42 48" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/f9849d9b-f9f1-4bc1-bb61-4216170ee1b4">
+
 
 ## Discussion
 The results indicate that data augmentation proved useful in detecting alzheimers overall. The most useful method proved to be increasing brightness in the images as this gave an F1-Score of xx, which is xx over the no augmentation baseline. This conforms with findings for most effective data augmentation type for 3D tumor detection (https://ieeexplore-ieee-org.ez.statsbiblioteket.dk/stamp/stamp.jsp?tp=&arnumber=9506328). Also, xx and xx proved to be useful augmentations
