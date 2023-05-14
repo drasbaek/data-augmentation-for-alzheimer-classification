@@ -33,7 +33,7 @@ def arg_parse():
     parser.add_argument("-b", "--brightness_range", nargs="+", type=float, default=[1, 1])
     parser.add_argument("-s", "--shear_range", type=int, default=0)
     parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
-    parser.add_argument("-r", "--rotation", type=int, default=0)
+    parser.add_argument("-r", "--rotation_range", type=int, default=0)
     parser.add_argument("-n", "--name", type=str)
 
 
@@ -154,7 +154,7 @@ def load_all_data(inpath, args):
         args.brightness_range == [1, 1],
         args.shear_range == 0,
         args.zoom_range == [1, 1],
-        args.rotation == 0
+        args.rotation_range == 0
     ]):
         train_data = load_data_subset(inpath, "train")
 
