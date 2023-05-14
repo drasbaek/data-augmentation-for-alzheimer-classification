@@ -1,4 +1,4 @@
-# Assignment 4 (Self-Assigned): Data Augmentation for Alzheimers Classifications
+# Assignment 4 (Self-Assigned): Data Augmentation for Alzheimers Classification
 
 ## Description
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
@@ -61,7 +61,7 @@ For further information on model parameters, refer to [TensorFlow Documentation]
 
 For instance:
 ```
-python3 src/main.py --zca_whitening True --zoom_range 1.5 1.9 --name "zoom_and_whitening"
+python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom"
 ```
 
 
