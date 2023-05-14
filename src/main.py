@@ -183,8 +183,8 @@ def build_model():
 
     # create a one dimensional embedding of the image
     model.add(Rescaling(1./255, input_shape=(128,128,3)))
-    model.add(Conv2D(filters=1,kernel_size=(3,3),padding='same',activation='relu'))
-    model.add(Dropout(0.4)) # big dropout to avoid overfitting
+    model.add(Conv2D(filters=1,kernel_size=(3,3),padding='valid',activation='relu'))
+    model.add(Dropout(0.3)) # big dropout to avoid overfitting
     model.add(Flatten())
 
     # classify the embedding with a simple dense network
@@ -289,7 +289,7 @@ def main():
     history = model.fit(
         train_data,
         validation_data=val_data,
-        batch_size=128,
+        batch_size=64,
         epochs=10,
         verbose=1
     )
