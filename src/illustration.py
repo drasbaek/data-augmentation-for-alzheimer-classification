@@ -1,6 +1,20 @@
+""" illustration.py
+Author: 
+    Anton Drasbæk Schiønning (202008161), GitHub: @drasbaek
+
+Desc:
+   This script illustrates the augmentations used in the final model.
+   It is only used to create an illustration for the project README.md file.
+
+Usage:
+    $ python src/illustration.py
+"""
+
+# load packages
 from pathlib import Path
 import matplotlib.pyplot as plt
 from keras.preprocessing.image import ImageDataGenerator
+
 
 def augment_image(inpath, augmentation_params):
     """
@@ -32,9 +46,10 @@ def augment_image(inpath, augmentation_params):
     
     return img
 
+
 def illustrate_augmentations(images, titles, outpath):
     """
-    Illustrate augmentations.
+    Illustrate augmentations on a single plot.
 
     Args:
     -   images (list): List of images.
@@ -57,7 +72,6 @@ def illustrate_augmentations(images, titles, outpath):
 
     # save figure with both images
     fig.savefig(outpath / "aug_illustration.png", dpi=600, bbox_inches="tight")
-
 
 
 def main():
@@ -94,6 +108,7 @@ def main():
         img = augment_image(inpath, augmentation)
         images.append(img)
 
+    # illustrate augmentations and save figure
     illustrate_augmentations(images, titles, outpath)
 
 if __name__ == "__main__":
