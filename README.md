@@ -44,7 +44,7 @@ The explored augmentations on the images are:
 * Increased Zoom (Zooms closer into the scan, removing much of the black background)
 * Rotation (Rotates image around its center)
 
-![alt text](https://github.com/drasbaek/data-augmentation-for--classification/blob/main/out/aug_illustration.png?raw=True)
+![alt text](https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/blob/main/out/aug_illustration.png?raw=True)
 <br/><br/>
 
 
