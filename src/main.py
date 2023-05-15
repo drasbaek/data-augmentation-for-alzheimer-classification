@@ -1,41 +1,56 @@
-# tf tools
+""" classifier.py
+Author: 
+    Anton Drasbæk Schiønning (202008161), GitHub: @drasbaek
+
+Desc:
+    Classifies transcripts from YouTube channels in chunks as either toxic or not toxic.
+    It utilizes a toxicity classification model from HuggingFace's model hub (https://huggingface.co/martin-ha/toxic-comment-model).
+    The model is a fine-tuned version of the DistilBERT model for toxicity classification (https://huggingface.co/distilbert-base-uncased).
+
+    Hence, this file covers the last two steps in the SafeTuber pipeline:
+        6. Classifying toxicity in chunks
+        7. Calculating average toxicity level for a channel
+
+    This script analyzes all the 200 channels in the top-youtubers-transcribed.csv file and provides transcriptions of their recent
+    videos in out/top-youtubers-classified.csv.
+
+Usage:
+    $ python src/classifier.py
+"""
+
+# import packages
 import tensorflow as tf
-
-# image processsing
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-# layers
 from tensorflow.keras.layers import Rescaling, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
-# generic model object
 from tensorflow.keras.models import Sequential
-
-#scikit-learn
 from sklearn.metrics import classification_report
-
-# for plotting
 import matplotlib.pyplot as plt
-
 from pathlib import Path
-
-# splitting folders
 import splitfolders
-
 import numpy as np
 from keras.utils import Sequence
-
 import argparse
 
+# define functions
 def arg_parse():
+    """
+    Parse command line arguments to script.
+    It is possible to specify the augmentation parameters to be used and their ranges.
+    You must also specify a name for the model output to be saved under
+
+    Returns:
+      args (argparse.Namespace): Parsed arguments.
+    """
+
     # initialize parser
     parser = argparse.ArgumentParser()
 
-    # add argument
+    # add arguments
     parser.add_argument("-b", "--brightness_range", nargs="+", type=float, default=[1, 1])
     parser.add_argument("-s", "--shear_range", type=int, default=0)
     parser.add_argument("-z", "--zoom_range", nargs="+", type=float, default=[1, 1])
     parser.add_argument("-r", "--rotation_range", type=int, default=0)
     parser.add_argument("-n", "--name", type=str)
-
 
     # parse arguments
     args = parser.parse_args()
@@ -62,6 +77,7 @@ def define_paths():
 
     return inpath, outpath
 
+
 def split_folders(inpath):
     '''
     Split the dataset into train, validation and test folders.
@@ -70,7 +86,7 @@ def split_folders(inpath):
     -   inpath (pathlib.PosixPath): Path to input data.
     '''
 
-    # define output dir
+    # define output dir for split data
     outpath = inpath / "dataset_split"
 
     # check if the folder exists already (this ensures that we only do the split for the first run)
@@ -92,14 +108,18 @@ class CustomDataGenerator(Sequence):
 
     '''
 
+    # initialize the class
     def __init__(self, original_generator, augmented_generator):
         self.original_generator = original_generator
         self.augmented_generator = augmented_generator
-        
+    
+    # define the length of the generator
     def __len__(self):
         return len(self.original_generator)
     
+    # define the getitem method
     def __getitem__(self, index):
+
         # get the original batch of images and labels
         x_original, y_original = self.original_generator[index]
         
@@ -114,6 +134,18 @@ class CustomDataGenerator(Sequence):
 
 
 def load_data_subset(inpath, rel_path, args=None):
+    """
+    Loads a subset of the data (train, test or validation) and returns it as a generator.
+
+    Args:
+    -   inpath (pathlib.PosixPath): Path to input data.
+    -   rel_path (str): Relative path to the subset of the data to be loaded (i.e. train, test or validation).
+    -   args (argparse.Namespace): Parsed arguments (containing augmentation parameters).
+
+    Returns:
+    -   data_subset (ImageDataGenerator): Generator for the subset of the data.
+    """
+
     # get path to the split dataset
     path = inpath / "dataset_split"
     
@@ -148,6 +180,19 @@ def load_data_subset(inpath, rel_path, args=None):
 
 
 def load_all_data(inpath, args):
+    """
+    Utilizes load_data_subset recurrently to load all data (train, test and validation) and returns it as a generator.
+    Uses CustomDataGenerator to merge original and augmented data if augmentation is used.
+
+    Args:
+    -   inpath (pathlib.PosixPath): Path to input data.
+    -   args (argparse.Namespace): Parsed arguments (containing augmentation parameters).
+
+    Returns:
+    -   train_data (ImageDataGenerator): Generator for the training data.
+    -   val_data (ImageDataGenerator): Generator for the validation data.
+    -   test_data (ImageDataGenerator): Generator for the test data.
+    """
     
     # check if all arguments are default (i.e. no augmentation)
     if all([
@@ -175,10 +220,14 @@ def load_all_data(inpath, args):
 
 def build_model():
     '''
-    Model inspired from https://www.kaggle.com/code/ashishsingh226/brain-mri-image-alzheimer-classifier/notebook, but heavily simplified and small alterations made.
+    Builds the model for the classification task.
+    The model is a simple convolutional neural network with a dense layer on top.
 
-    It is a simple convolutional neural network with a dense layer on top.
+    Returns:
+    -   model (tensorflow.python.keras.engine.sequential.Sequential): The compiled model.
     '''
+
+    # initialize the model
     model = Sequential()
 
     # create a one dimensional embedding of the image
@@ -198,32 +247,40 @@ def build_model():
         loss="categorical_crossentropy",
         metrics=["accuracy"]
     )
+
     return model
 
 def initialize_outputs(outpath, args):
+    """
+    Initializes an output folder (for clf report and loss/accuracy plots) for the specific run.
+
+    Args:
+    -   outpath (pathlib.PosixPath): Path to where the output folder should be created.
+    -   args (argparse.Namespace): Namespace object containing the arguments passed to the script.
+    """
+
     # get name for output folder
     name = args.name
-
-    print(name)
 
     # name a new folder in output after name if it does not exist already
     if not (outpath / name).exists():
         (outpath / name).mkdir()
 
+
 def plot_history(history, outpath, args):
-    '''
-    Creates and saves a plot displaying the training and validation loss and accuracy.
+    """
+    Creates and saves a plot displaying the training/validation loss and accuracy.
 
     Args:
     -   history (tensorflow.python.keras.callbacks.History): History object containing the training and validation loss and accuracy.
     -   outpath (pathlib.PosixPath): Path to where the plots should be saved.
     -   args (argparse.Namespace): Namespace object containing the arguments passed to the script.
-    '''
+    """
 
-    # Create a new figure with subplots
+    # create a figure with subplots
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 10))
 
-    # Plot training and validation loss
+    # plot training and validation loss
     ax1.plot(history.history['loss'], label='train')
     ax1.plot(history.history['val_loss'], label='val')
     ax1.set_title(f'{args.name}: Training and validation loss')
@@ -231,7 +288,7 @@ def plot_history(history, outpath, args):
     ax1.set_ylabel('Loss')
     ax1.legend()
 
-    # Plot training and validation accuracy
+    # plot training and validation accuracy
     ax2.plot(history.history['accuracy'], label='train')
     ax2.plot(history.history['val_accuracy'], label='val')
     ax2.set_title(f'{args.name}: Training and validation accuracy')
@@ -239,23 +296,23 @@ def plot_history(history, outpath, args):
     ax2.set_ylabel('Accuracy')
     ax2.legend()
 
-    # Adjust the spacing between subplots
+    # adjust the spacing between subplots
     fig.tight_layout()
 
-    # Save the plot
+    # save the plot
     plt.savefig(outpath / args.name / f"{args.name}_loss_and_accuracy.png")
 
 def save_classification_report(outpath, args, y_true, y_pred, target_names):
-    '''
+    """
     Saves a classification report as a text file.
 
     Args:
     -   outpath (pathlib.PosixPath): Path to where the classification report should be saved.
+    -   args (argparse.Namespace): Namespace object containing the arguments passed to the script.
     -   y_true (numpy.ndarray): Array containing the true labels.
     -   y_pred (numpy.ndarray): Array containing the predicted labels.
     -   target_names (list): List containing the names of the classes (neccessary for the classification to look nice)
-
-    '''
+    """
 
     # create classification report
     report = classification_report(y_true, y_pred, target_names=target_names)
@@ -263,8 +320,6 @@ def save_classification_report(outpath, args, y_true, y_pred, target_names):
     # save report
     with open(outpath / args.name / f"{args.name}_clf_report.txt", "w") as f:
         f.write(report)
-    
-    print(report)
     
 
 def main():
@@ -282,8 +337,6 @@ def main():
 
     # build model
     model = build_model()
-
-    model.summary()
 
     # fit the model
     history = model.fit(
@@ -305,7 +358,6 @@ def main():
 
     # save classification report
     save_classification_report(outpath, args, test_data.classes, y_pred, test_data.class_indices.keys())
-
 
 
 if __name__ == "__main__":
