@@ -97,8 +97,8 @@ def main():
     titles = [
         "No Augmentation",
         "Increased Brightness",
-        "Shear",
-        "Zoomed In",
+        "Shearing",
+        "Increased Zoom",
         "Rotation"]
 
     # get image using each augmentation
