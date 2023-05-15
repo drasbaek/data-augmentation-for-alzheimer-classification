@@ -1,13 +1,21 @@
 # Assignment 4 (Self-Assigned): Data Augmentation for Alzheimer Classification
 
-## Description
+## Repository Overview
+1. [Description](#description)
+2. [Methodology](#method)
+3. [Repository Tree](#tree)
+4. [Usage](#usage)
+5. [Results](#result)
+6. [Discussion](#discuss)
+
+## Description <a name="description"></a>
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
 This project attempts to classify varying degrees of the Alzheimer's Disease based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal qualitify of life across cultures.
 
 The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
 
-## Methodology
+## Methodology <a name="method"></a>
 ### Model Architecture
 The same architecture is used for all augmentations, a simple convolutional network. In brief, it rescales and uses a convlutional layer to flatten the input images. This flattened image then forms an embedding which is fed to a fully-connected network with three layers. The model card is as follows:
 ```plaintext
@@ -70,7 +78,7 @@ The explored augmentations on the images are:
 ```
 <br/><br/>
 
-## General Usage <a name="analysis"></a>
+## General Usage <a name="usage"></a>
 ### Setup
 
 To run the analysis, you must have Python 3 installed and clone this GitHub repository.You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded) as seen on the Repository tree.
@@ -84,7 +92,7 @@ bash run.sh
 This will produce classification reports and loss/accuracy plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
 <br/><br/>
 
-## Modified Usage <a name="modified_analysis"></a>
+## Modified Usage
 ### Setup
 To run a modified analysis or only part of the full analysis, you should first install requirements and setup the virtual environment
 
@@ -110,11 +118,11 @@ python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom
 For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
 <br/><br/>
 
-## Results
+## Results <a name="result"></a>
 <img width="601" alt="Screenshot 2023-05-14 at 19 42 48" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/f9849d9b-f9f1-4bc1-bb61-4216170ee1b4">
 <br/><br/>
 
-## Discussion
+## Discussion <a name="discuss"></a>
 The results indicate the effectiveness of different data augmentation techniques for detecting Alzheimer's disease. The most impactful augmentation method was increasing brightness in the images, which resulted in an F1-Score of 0.98. This F1-Score was four percentage points higher than the baseline without any augmentation. This finding aligns with previous research that identified increased brightness as the most effective data augmentation type for 3D tumor detection (Cirillo et al., 2021). <br>
 
 Additionally, increased zoom and rotation also proved to be beneficial augmentations, achieving F1-Scores of 0.97 and 0.96, respectively. <br>
