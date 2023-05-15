@@ -32,6 +32,7 @@ Trainable params: 2,040,800
 Non-trainable params: 0
 _________________________________________________________________
 ```
+For each augmentation type, a model of this architecture was fit to the data and trained for a duration of 10 epochs.
 
 ### Selected Augmentations
 
@@ -63,7 +64,7 @@ Setting up an environment, installing requirements and running the analysis is a
 ```
 bash run.sh
 ```
-This will produce classification reports and loss plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
+This will produce classification reports and loss/accuracy plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
 
 
 ## Modified Usage <a name="modified_analysis"></a>
