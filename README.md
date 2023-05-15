@@ -66,6 +66,7 @@ The explored augmentations on the images are:
     ├── illustration.py                                 <----- Script for creating illustration of augmentations  
     └── classify.py                                     <----- Script for running a classification model on an augmentation type
 ```
+<br/><br/>
 
 ## General Usage <a name="analysis"></a>
 ### Setup
@@ -105,7 +106,7 @@ For instance:
 python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom"
 ```
 For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
-<br>
+<br/><br/>
 
 ## Results
 <img width="601" alt="Screenshot 2023-05-14 at 19 42 48" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/f9849d9b-f9f1-4bc1-bb61-4216170ee1b4">
