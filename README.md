@@ -47,7 +47,23 @@ The explored augmentations on the images are:
 
 ## Repository Tree <a name="tree"></a>
 ```
-
+├── in
+│   └── Dataset                                        <----- Insert downloaded dataset from Kaggle here
+├── out
+│   ├── aug_illustration.png                          
+│   ├── increased_brightness                           <----- Folder with clf report and loss/accuracy for brightness aug.
+│   │   ├── increased_brightness_clf_report.txt
+│   │   └── increased_brightness_loss_and_accuracy.png
+│   ├── no_augmentation
+│   ├── rotation
+│   ├── shear
+│   └── zoomed_in
+├── requirements.txt
+├── run.sh
+├── setup.sh
+└── src
+    ├── illustration.py                                 <----- Script for creating illustration of augmentations  
+    └── main.py                                         <----- Script for running a model on an augmentation type
 ```
 
 ## General Usage <a name="analysis"></a>
