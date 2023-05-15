@@ -3,7 +3,9 @@
 ## Description
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
-This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a convolutional neural network. The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
+This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal qualitify of life.
+
+The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
 
 ## Methodology
 ### Model Architecture
@@ -113,7 +115,7 @@ For further information on model parameters, refer to [TensorFlow Documentation]
 <br/><br/>
 
 ## Discussion
-The results indicate the effectiveness of different data augmentation techniques for detecting Alzheimer's disease. The most impactful augmentation method was increasing brightness in the images, which resulted in an F1-Score of 0.98. This F1-Score was four percentage points higher than the baseline without any augmentation. This finding aligns with previous research that identified increased brightness as the most effective data augmentation type for 3D tumor detection (https://ieeexplore-ieee-org.ez.statsbiblioteket.dk/stamp/stamp.jsp?tp=&arnumber=9506328). <br>
+The results indicate the effectiveness of different data augmentation techniques for detecting Alzheimer's disease. The most impactful augmentation method was increasing brightness in the images, which resulted in an F1-Score of 0.98. This F1-Score was four percentage points higher than the baseline without any augmentation. This finding aligns with previous research that identified increased brightness as the most effective data augmentation type for 3D tumor detection (Cirillo et al., 2021). <br>
 
 Additionally, increased zoom and rotation also proved to be beneficial augmentations, achieving F1-Scores of 0.97 and 0.96, respectively. <br>
 
@@ -125,5 +127,6 @@ Still a few limitations to this project should be mentioned:
 * The baseline augmentation is only trained on half as much data as the augmentation models and hence should be expected to perform worse under all circumstances.
 * Other model structures, such as applying a pretrained CNN instead, could lead to vastly different results for the augmentation types.
 
-
+## References
+* Cirillo, M. D., Abramian, D., & Eklund, A. (2021, September). What is the best data augmentation for 3D brain tumor segmentation?. In 2021 IEEE International Conference on Image Processing (ICIP) (pp. 36-40). IEEE.
 
