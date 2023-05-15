@@ -32,6 +32,7 @@ Trainable params: 2,040,800
 Non-trainable params: 0
 _________________________________________________________________
 ```
+For each augmentation type, a model of this architecture was fit to the data and trained for a duration of 10 epochs.
 
 ### Selected Augmentations
 
@@ -63,7 +64,7 @@ Setting up an environment, installing requirements and running the analysis is a
 ```
 bash run.sh
 ```
-This will produce classification reports and loss plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
+This will produce classification reports and loss/accuracy plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
 
 
 ## Modified Usage <a name="modified_analysis"></a>
@@ -97,7 +98,17 @@ python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom
 
 
 ## Discussion
-The results indicate that data augmentation proved useful in detecting alzheimers overall. The most useful method proved to be increasing brightness in the images as this gave an F1-Score of xx, which is xx over the no augmentation baseline. This conforms with findings for most effective data augmentation type for 3D tumor detection (https://ieeexplore-ieee-org.ez.statsbiblioteket.dk/stamp/stamp.jsp?tp=&arnumber=9506328). Also, xx and xx proved to be useful augmentations
+The results indicate the effectiveness of different data augmentation techniques for detecting Alzheimer's disease. The most impactful augmentation method was increasing brightness in the images, which resulted in an F1-Score of 0.98. This F1-Score was four percentage points higher than the baseline without any augmentation. This finding aligns with previous research that identified increased brightness as the most effective data augmentation type for 3D tumor detection (https://ieeexplore-ieee-org.ez.statsbiblioteket.dk/stamp/stamp.jsp?tp=&arnumber=9506328). <br>
+
+Additionally, increased zoom and rotation also proved to be beneficial augmentations, achieving F1-Scores of 0.97 and 0.96, respectively. <br>
+
+However, the shearing augmentation significantly worsened Alzheimer's detection, resulting in F1-Scores below the baseline. Despite this drawback, shearing was the only augmentation technique that improved the recall for the Moderate Demented class, which was the least represented class in the dataset. Thus, while shearing may not perform well in detecting milder forms of Alzheimer's, it could be considered valuable for accurately identifying moderate Alzheimer's cases.
+
+Still a few limitations to this project should be mentioned:
+* It only tests on a narrow scope of images with extremely unbalanced classes.
+* It only applies the augmentation techniques in isolation; other effects may appear from using them in conjunction (possible to investigate with the modified usage section)
+* The baseline augmentation is only trained on half as much data as the augmentation models and hence should be expected to perform worse under all circumstances.
+* Other model structures, such as applying a pretrained CNN instead, could lead to vastly different results for the augmentation types.
 
 
 
