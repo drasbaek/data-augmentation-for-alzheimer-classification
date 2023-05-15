@@ -3,17 +3,9 @@ Author:
     Anton Drasbæk Schiønning (202008161), GitHub: @drasbaek
 
 Desc:
-    Classifies transcripts from YouTube channels in chunks as either toxic or not toxic.
-    It utilizes a toxicity classification model from HuggingFace's model hub (https://huggingface.co/martin-ha/toxic-comment-model).
-    The model is a fine-tuned version of the DistilBERT model for toxicity classification (https://huggingface.co/distilbert-base-uncased).
-
-    Hence, this file covers the last two steps in the SafeTuber pipeline:
-        6. Classifying toxicity in chunks
-        7. Calculating average toxicity level for a channel
-
-    This script analyzes all the 200 channels in the top-youtubers-transcribed.csv file and provides transcriptions of their recent
-    videos in out/top-youtubers-classified.csv.
-
+    This script contains the code for a CNN classifier that identifies varying degrees of alzheimers in brain scans.
+    It is designed to be run from the command line, where it is possible to specify augmentation parameters.
+    
 Usage:
     $ python src/classifier.py
 """
