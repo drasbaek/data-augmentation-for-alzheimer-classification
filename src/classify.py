@@ -5,7 +5,7 @@ Author:
 Desc:
     This script contains the code for a CNN classifier that identifies varying degrees of alzheimers in brain scans.
     It is designed to be run from the command line, where it is possible to specify augmentation parameters.
-    
+
 Usage:
     $ python src/classifier.py
 """
@@ -13,7 +13,7 @@ Usage:
 # import packages
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.layers import Rescaling, Conv2D, MaxPooling2D, Dropout, Dense, Flatten
+from tensorflow.keras.layers import Rescaling, Conv2D, Dropout, Dense, Flatten
 from tensorflow.keras.models import Sequential
 from sklearn.metrics import classification_report
 import matplotlib.pyplot as plt
