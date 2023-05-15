@@ -63,7 +63,7 @@ The explored augmentations on the images are:
 ├── setup.sh
 └── src
     ├── illustration.py                                 <----- Script for creating illustration of augmentations  
-    └── main.py                                         <----- Script for running a model on an augmentation type
+    └── classify.py                                     <----- Script for running a classification model on an augmentation type
 ```
 
 ## General Usage <a name="analysis"></a>
@@ -72,7 +72,7 @@ The explored augmentations on the images are:
 To run the analysis, you must have Python 3 installed and clone this GitHub repository. <br>
 You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded)
 
-The analysis is conducted by running the `main.py` file with varying arguments to fulfill the various augmentation types. <br> To run the entire analysis with all augmentations, you should use the `run.sh` bash script as such from the root directory.
+The analysis is conducted by running the `classify.py` file with varying arguments to fulfill the various augmentation types. <br> To run the entire analysis with all augmentations, you should use the `run.sh` bash script as such from the root directory.
 
 ### Run
 
