@@ -1,9 +1,9 @@
-# Assignment 4 (Self-Assigned): Data Augmentation for Alzheimers Classification
+# Assignment 4 (Self-Assigned): Data Augmentation for Alzheimer Classification
 
 ## Description
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
-This project attempts to classify varying degrees of the alzheimers diseased based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal qualitify of life across cultures.
+This project attempts to classify varying degrees of the Alzheimer's Disease based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal qualitify of life across cultures.
 
 The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
 
@@ -44,7 +44,7 @@ The explored augmentations on the images are:
 * Increased Zoom (Zooms closer into the scan, removing much of the black background)
 * Rotation (Rotates image around its center)
 
-![alt text](https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/blob/main/out/aug_illustration.png?raw=True)
+![alt text](https://github.com/drasbaek/data-augmentation-for--classification/blob/main/out/aug_illustration.png?raw=True)
 <br/><br/>
 
 
