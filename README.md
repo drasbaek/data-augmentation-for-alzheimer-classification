@@ -4,20 +4,24 @@
 1. [Description](#description)
 2. [Methodology](#method)
 3. [Repository Tree](#tree)
-4. [Usage](#usage)
-5. [Results](#result)
-6. [Discussion](#discuss)
+4. [General Usage](#gusage)
+5. [Modified Usage](#musage)
+6. [Results](#result)
+7. [Discussion](#discuss)
 
 ## Description <a name="description"></a>
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
 This project attempts to classify varying degrees of the Alzheimer's Disease based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal qualitify of life across cultures.
 
-The scope of the analysis is to test whether data augmentation can be used to improve the performance of the model, and if so, which augmentation methods are the most effective?
+The scope of the analysis is to test:
+1. Can data augmentation can be used to improve the performance of the model?
+2. If so, which augmentation methods are the most effective in Alzheimer's detection?
+<br>
 
 ## Methodology <a name="method"></a>
 ### Model Architecture
-The same architecture is used for all augmentations, a simple convolutional network. In brief, it rescales and uses a convlutional layer to flatten the input images. This flattened image then forms an embedding which is fed to a fully-connected network with three layers. The model card is as follows:
+A fairly simple convolutional neural network, build from scratch, is used for all runs. In brief, it rescales and uses a convlutional layer to flatten the input images. This flattened image then forms an embedding which is fed to a fully-connected network with three layers. The model card is as follows:
 ```plaintext
 Model: "sequential"
 _________________________________________________________________
@@ -59,12 +63,12 @@ The explored augmentations on the images are:
 ## Repository Tree <a name="tree"></a>
 ```
 ├── in
-│   └── Dataset                                        <----- Insert downloaded dataset from Kaggle here
+│   └── Dataset                         <----- Alzheimers MRI dataset (MUST BE DOWNLOADED AND INSERTED HERE)
 ├── out
 │   ├── aug_illustration.png                          
-│   ├── increased_brightness                           <----- Folder with clf report and loss/accuracy for brightness aug.
-│   │   ├── increased_brightness_clf_report.txt
-│   │   └── increased_brightness_loss_and_accuracy.png
+│   ├── increased_brightness                          
+│   │   ├── increased_brightness_clf_report.txt         <----- Classification report with scores for increased brightness
+│   │   └── increased_brightness_loss_and_accuracy.png  <----- Loss/Accuracy for training and validation with increased brightness
 │   ├── no_augmentation
 │   ├── rotation
 │   ├── shear
@@ -73,15 +77,15 @@ The explored augmentations on the images are:
 ├── run.sh
 ├── setup.sh
 └── src
-    ├── illustration.py                                 <----- Script for creating illustration of augmentations  
-    └── classify.py                                     <----- Script for running a classification model on an augmentation type
+    ├── illustration.py                 <----- Script for creating illustration of augmentations  
+    └── classify.py                     <----- Script for running a classification model on an augmentation type
 ```
 <br/><br/>
 
-## General Usage <a name="usage"></a>
+## General Usage <a name="gusage"></a>
 ### Setup
 
-To run the analysis, you must have Python 3 installed and clone this GitHub repository.You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded) as seen on the Repository tree.
+To run the analysis, you must have Python 3 installed and clone this GitHub repository.You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded) as seen on the *Repository tree*.
 
 ### Run
 
@@ -89,10 +93,18 @@ The analysis is conducted by running the `classify.py` file with varying argumen
 ```
 bash run.sh
 ```
-This will produce classification reports and loss/accuracy plots for all augmentation types as well as the non-augmentation baseline in the `out` directory.
+
+This achieves the following:
+* Sets up a virtual environment
+* Installs requirements to that environment
+* Runs classification using the dataset with no augmentations
+* Runs classifications for each of the augmentation types
+* Deactivates environment
+
+This will produce classification reports and loss/accuracy plots for all augmentation types as well as the no augmentation baseline in the `out` directory.
 <br/><br/>
 
-## Modified Usage
+## Modified Usage <a name="musage"></a>
 ### Setup
 To run a modified analysis or only part of the full analysis, you should first install requirements and setup the virtual environment
 
@@ -100,7 +112,7 @@ To run a modified analysis or only part of the full analysis, you should first i
 bash setup.sh
 ```
 
-### Running main.py
+### Classification
 The `main.py` script only supports the four specified augmentation types, but their ranges can be altered and the augmentations can be combined. <br> 
 To do this, you can run `main.py` directly with the following arguments
 ```
@@ -115,7 +127,7 @@ For instance:
 ```
 python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom"
 ```
-For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
+The folder in `out` is named according to what you specify under the `name` argument. For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
 <br/><br/>
 
 ## Results <a name="result"></a>
@@ -123,11 +135,11 @@ For further information on model parameters, refer to [TensorFlow Documentation]
 <br/><br/>
 
 ## Discussion <a name="discuss"></a>
-The results indicate the effectiveness of different data augmentation techniques for detecting Alzheimer's disease. The most impactful augmentation method was increasing brightness in the images, which resulted in an F1-Score of 0.98. This F1-Score was four percentage points higher than the baseline without any augmentation. This finding aligns with previous research that identified increased brightness as the most effective data augmentation type for 3D tumor detection (Cirillo et al., 2021). <br>
+The results indicate the effectiveness of different data augmentation techniques for detecting Alzheimer's disease. The most impactful augmentation method was increasing brightness in the images, which resulted in an **F1-Score of 0.98**. This F1-Score was four percentage points higher than the baseline without any augmentation. This finding aligns with previous research that identified increased brightness as the most effective data augmentation type for 3D tumor detection (Cirillo et al., 2021). <br>
 
 Additionally, increased zoom and rotation also proved to be beneficial augmentations, achieving F1-Scores of 0.97 and 0.96, respectively. <br>
 
-However, the shearing augmentation significantly worsened Alzheimer's detection, resulting in F1-Scores below the baseline. Despite this drawback, shearing was the only augmentation technique that improved the recall for the Moderate Demented class, which was the least represented class in the dataset. Thus, while shearing may not perform well in detecting milder forms of Alzheimer's, it could be considered valuable for accurately identifying moderate Alzheimer's cases.
+However, the shearing augmentation significantly worsened Alzheimer's detection, resulting in F1-Scores below the baseline. Despite this drawback, shearing was the only augmentation technique that improved the recall for the *Moderate Demented* class, which was the least represented class in the dataset. Thus, while shearing may not perform well in detecting milder forms of Alzheimer's, it could be considered valuable for accurately identifying moderate Alzheimer's cases.
 
 Still a few limitations to this project should be mentioned:
 * It only tests on a narrow scope of images with extremely unbalanced classes.
