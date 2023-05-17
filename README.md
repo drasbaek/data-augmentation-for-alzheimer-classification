@@ -2,12 +2,12 @@
 
 ## Repository Overview
 1. [Description](#description)
-2. [Methodology](#method)
-3. [Repository Tree](#tree)
-4. [General Usage](#gusage)
-5. [Modified Usage](#musage)
-6. [Results](#result)
-7. [Discussion](#discuss)
+2. [Repository Tree](#tree)
+3. [Methodology](#method)
+5. [General Usage](#gusage)
+6. [Modified Usage](#musage)
+7. [Results](#result)
+8. [Discussion](#discuss)
 
 ## Description <a name="description"></a>
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
@@ -18,6 +18,28 @@ The scope of the analysis is to test:
 1. Can data augmentation can be used to improve Alzheimer's detection?
 2. If so, which augmentation methods are the most effective in Alzheimer's detection?
 <br>
+
+## Repository Tree <a name="tree"></a>
+```
+├── in
+│   └── Dataset             <----- Alzheimers MRI dataset (MUST BE DOWNLOADED AND INSERTED HERE)
+├── out
+│   ├── aug_illustration.png                          
+│   ├── increased_brightness                          
+│   │   ├── increased_brightness_clf_report.txt         <----- Classification report with scores for increased brightness
+│   │   └── increased_brightness_loss_and_accuracy.png  <----- Loss/Accuracy for training and validation with increased brightness
+│   ├── no_augmentation
+│   ├── rotation
+│   ├── shear
+│   └── zoomed_in
+├── requirements.txt
+├── run.sh
+├── setup.sh
+└── src
+    ├── illustration.py     <----- Script for creating illustration of augmentations  
+    └── classify.py         <----- Script for running a classification model on an augmentation type
+```
+<br/><br/>
 
 ## Methodology <a name="method"></a>
 ### Model Architecture
@@ -59,33 +81,10 @@ The explored augmentations on the images are:
 ![alt text](https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/blob/main/out/aug_illustration.png?raw=True)
 <br/><br/>
 
-
-## Repository Tree <a name="tree"></a>
-```
-├── in
-│   └── Dataset                         <----- Alzheimers MRI dataset (MUST BE DOWNLOADED AND INSERTED HERE)
-├── out
-│   ├── aug_illustration.png                          
-│   ├── increased_brightness                          
-│   │   ├── increased_brightness_clf_report.txt         <----- Classification report with scores for increased brightness
-│   │   └── increased_brightness_loss_and_accuracy.png  <----- Loss/Accuracy for training and validation with increased brightness
-│   ├── no_augmentation
-│   ├── rotation
-│   ├── shear
-│   └── zoomed_in
-├── requirements.txt
-├── run.sh
-├── setup.sh
-└── src
-    ├── illustration.py                 <----- Script for creating illustration of augmentations  
-    └── classify.py                     <----- Script for running a classification model on an augmentation type
-```
-<br/><br/>
-
 ## General Usage <a name="gusage"></a>
 ### Setup
 
-To run the analysis, you must have Python 3 installed and clone this GitHub repository.You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded) as seen on the *Repository tree*.
+To run the analysis, you must have Python 3 installed and clone this GitHub repository. You should also download the [Alzheimers MRI dataset](https://www.kaggle.com/datasets/sachinkumar413/alzheimer-mri-dataset) from Kaggle and insert the folder into the `in` directory under the name "Dataset" (should be the default when downloaded) as seen on the *Repository tree*.
 
 ### Run
 
@@ -106,13 +105,13 @@ This will produce classification reports and loss/accuracy plots for all augment
 
 ## Modified Usage <a name="musage"></a>
 ### Setup
-To run a modified analysis or only part of the full analysis, you should first install requirements and setup the virtual environment
+To run a modified analysis or only part of the full analysis, you should follow the setup steps from *General Usage*. In addition, a shell script must be run to activate virtual environment and install requirements
 
 ```
 bash setup.sh
 ```
 
-### Classification
+### Running the analysis
 The `main.py` script only supports the four specified augmentation types, but their ranges can be altered and the augmentations can be combined. <br> 
 To do this, you can run `main.py` directly with the following arguments
 ```
