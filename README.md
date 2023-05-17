@@ -15,7 +15,7 @@ This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk
 This project attempts to classify varying degrees of the Alzheimer's Disease based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal quality of life across cultures.
 
 The scope of the analysis is to test:
-1. Can data augmentation can be used to improve the performance of the model?
+1. Can data augmentation can be used to improve Alzheimer's detection?
 2. If so, which augmentation methods are the most effective in Alzheimer's detection?
 <br>
 
