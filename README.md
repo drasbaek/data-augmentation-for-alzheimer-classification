@@ -112,21 +112,22 @@ bash setup.sh
 ```
 
 ### Running the analysis
-The `main.py` script only supports the four specified augmentation types, but their ranges can be altered and the augmentations can be combined. <br> 
-To do this, you can run `main.py` directly with the following arguments
-```
---brightness_range (default: 1 1) (range used in augmented run: 1.5 1.6)
---shear_range (default: 0) (frange used in augmented run: 40)
---zoom_range (default: 1, 1) (range used in augmented run: 0.75 0.8)
---rotation_range (default: 0) (range used in augmented run: 180)
---name (no default, must be specified)
-```
+The `main.py` script only supports the four specified augmentation types, but their ranges can be altered and the augmentations can be combined. To do this, you can run `main.py` directly with the following arguments:
+
+| Argument              | Default | Value(s) used in Augmented Run                                                             |
+|---------------------|---------------|-------------------------------------------------------------------------|
+| `--brightness_range`       | 1.0 1.0        | 1.5 1.6       |
+| `--shear_range`      | 0           | 40                                          |
+| `--zoom_range`       | 1.0 1.0           | 0.75 0.8                                          |
+| `--rotation_range`       | 0           | 180                                          |
+| `--name`       | *None, must be specified*           |        *Varies by run*   
+<br>
 
 For instance:
 ```
 python3 src/main.py --shear_range 70 --zoom_range 0.4 0.5 --name "shear_and_zoom"
 ```
-The folder in `out` is named according to what you specify under the `name` argument. For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator)
+The folder in `out` is named according to what you specify under the `name` argument. For further information on model parameters, refer to [TensorFlow Documentation](https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator).
 <br/><br/>
 
 ## Results <a name="result"></a>
