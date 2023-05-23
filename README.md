@@ -131,7 +131,8 @@ The folder in `out` is named according to what you specify under the `name` argu
 <br/><br/>
 
 ## Results <a name="result"></a>
-<img width="601" alt="Screenshot 2023-05-14 at 19 42 48" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/f9849d9b-f9f1-4bc1-bb61-4216170ee1b4">
+<img width="624" alt="Screenshot 2023-05-23 at 14 44 33" src="https://github.com/drasbaek/data-augmentation-for-alzheimer-classification/assets/80207895/b7c848e2-563d-4c9a-874d-c7fcba7d9dcc">
+
 <br/><br/>
 
 ## Discussion <a name="discuss"></a>
