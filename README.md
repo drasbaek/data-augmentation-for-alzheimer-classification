@@ -12,7 +12,7 @@
 ## Description <a name="description"></a>
 This repository forms the solution to self-chosen assignment 4 by Anton Drasbæk Schiønning (202008161) in the course "Visual Analytics" at Aarhus University.
 
-This project attempts to classify varying degrees of the Alzheimer's Disease based on MRI data using a convolutional neural network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal quality of life across cultures.
+This project attempts to classify varying degrees of the Alzheimer's Disease based on MRI data using a convolutional neural network. Specifically, it investigates whether data augmentation techniques can improve performance of the network. The motivation behind this is using a data-driven approach to better identify a disease which hampers people's relationships, memories and personal quality of life across cultures.
 
 The scope of the analysis is to test:
 1. Can data augmentation can be used to improve Alzheimer's detection?
